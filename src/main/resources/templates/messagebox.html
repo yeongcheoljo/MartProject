@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+        }
+        .btn-group {
+            margin-right: 10px; /* 버튼 그룹 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>메인페이지</h1>
+    <!-- 로그인, 회원가입, 로그아웃 버튼에 대해서도 동일하게 적용 -->
+    <!-- Bootstrap 클래스를 이용하여 스타일링 -->
+    <div class="btn-group">
+        <a href="/join" class="btn btn-primary">회원가입</a>
+        <a th:if="${session.id == null}" href="/login" class="btn btn-success">로그인</a>
+        <a th:unless="${session.id == null}" href="/logout" class="btn btn-danger">로그아웃</a>
+        <a th:unless="${session.id == null}" href="/messagebox" class="btn btn-danger">메시지함</a>
+    </div>
+    <a href="/management" class="btn btn-info">관리자페이지</a>
+    <a th:if="${session.id == 'admin'}" href="/management" class="btn btn-warning">상품관리</a>
+    <br>
+    안읽은 메시지
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>메시지 제목</th>
+            <th>발송일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${messageListN}">
+            <td><a th:href="@{'messagedetail/' + ${data.message_num}}" th:text="${data.message_name}"></a></td>
+            <td th:text="${data.message_send_date}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    읽은 메시지
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>메시지 제목</th>
+            <th>발송일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${messageListY}">
+            <td><a th:href="@{'messagedetail/' + ${data.message_num}}" th:text="${data.message_name}"></a></td>
+            <td th:text="${data.getMessage_send_date()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+            padding: 20px; /* 전체 페이지의 padding 설정 */
+        }
+        table {
+            width: 100%; /* 테이블 전체 폭을 100%로 설정 */
+            border-collapse: collapse; /* 테이블 셀 테두리 병합 */
+        }
+        th, td {
+            padding: 8px; /* 테이블 셀 안쪽 여백 설정 */
+            border-bottom: 1px solid #ddd; /* 테이블 셀 하단 테두리 설정 */
+        }
+        th {
+            background-color: #f2f2f2; /* 테이블 헤더 배경색 설정 */
+            text-align: left; /* 헤더 텍스트를 왼쪽 정렬 */
+        }
+        img {
+            max-width: 100px; /* 이미지 최대 폭 설정 */
+            max-height: 100px; /* 이미지 최대 높이 설정 */
+        }
+        input[type="submit"] {
+            background-color: #007bff; /* 변경하기 버튼 배경색 설정 */
+            color: #fff; /* 변경하기 버튼 글자색 설정 */
+            border: none; /* 변경하기 버튼 테두리 없음 */
+            padding: 10px 20px; /* 변경하기 버튼 안쪽 여백 설정 */
+            cursor: pointer; /* 커서 모양을 포인터로 설정 */
+            border-radius: 5px; /* 변경하기 버튼의 모서리를 둥글게 설정 */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* 변경하기 버튼에 호버 시 배경색 변경 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>상품관리 페이지</h1>
+    <a href="/" class="btn btn-secondary">메인페이지</a>
+    <a href="/stockorder" class="btn btn-primary">재고주문</a>
+    <a href="/stockmanagement" class="btn btn-warning">재고관리</a>
+    <a href="/disposal" class="btn btn-warning">폐기처리</a>
+    <a href="/messagesend" class="btn btn-info">메시지전송</a>
+    <a href="/preorder" class="btn btn-success">예약관리</a>
+    <br><br>
+    <h5>예약 상품 설정</h5>
+    <form id="preorderForm" th:action="@{/preorderGoodsSelect}" method="post">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th>상품명</th>
+                <th>이미지</th>
+                <th>재고</th>
+                <th>주문일</th>
+                <th>유통기한</th>
+                <th>재고위치</th>
+                <th>판매가</th>
+                <th>할인율</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${ExpCloseStockList}">
+                <td th:text="${data.goods.goods_name}"></td>
+                <td><img th:src="@{'/image/' + ${data.goods.goods_picture}}" alt="image"></td>
+                <td th:text="${data.stock}"></td>
+                <td th:text="${data.stock_date}"></td>
+                <td th:text="${data.stock_expiration_date}"></td>
+                <td th:text="${data.stock_place}"></td>
+                <td th:text="${data.stock_sell_price}"></td>
+                <td th:text="${data.stock_discount} + '%'"></td>
+                <td><input type="checkbox" th:value="${data.stock_num}" name="stock_num"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" onclick="preorderGoodsSelect()" class="btn btn-primary">예약 상품 등록</button>
+    </form>
+    <script>
+        function preorderGoodsSelect() {
+            var checkboxes = document.getElementsByName("stock_num");
+            var checked = false;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    checked = true;
+                    break;
+                }
+            }
+            if (checked) {
+                document.getElementById("preorderForm").submit();
+            } else {
+                alert("선택된 항목이 없습니다.");
+            }
+        }
+    </script>
+    <br><br>
+    <h5>예약 상품 확인 및 할인율 설정</h5>
+    <form th:action="@{/discountUpdate}" method="post">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th>상품명</th>
+                <th>이미지</th>
+                <th>재고</th>
+                <th>주문일</th>
+                <th>유통기한</th>
+                <th>재고위치</th>
+                <th>판매가</th>
+                <th>할인율</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${stockList}">
+                <td th:text="${data.goods.goods_name}">
+                    <input type="hidden" name="goods" th:value="${data.goods}"></td>
+                <td><img th:src="@{'/image/' + ${data.goods.goods_picture}}" alt="image"></td>
+                <td th:text="${data.stock}"><input type="hidden" name="stockCount" th:value="${data.stock}"></td>
+                <td th:text="${data.stock_date}"><input type="hidden" name="stockDate" th:value="${data.stock_date}"></td>
+                <td th:text="${data.stock_expiration_date}"><input type="hidden" name="stockExpDate" th:value="${data.stock_expiration_date}"></td>
+                <td th:text="${data.stock_place}"><input type="hidden" name="stockPlace" th:value="${data.stock_place}"></td>
+                <td th:text="${data.stock_sell_price}"><input type="hidden" name="sellPrice" th:value="${data.stock_sell_price}"></td>
+                <td><input type="text" name="discount"
+                           th:value="${data.stock_discount}" th:placeholder="${data.stock_discount}">%</td>
+                <input type="hidden" name="selectedItems" th:value="${data.stock_num}">
+                <!-- 각 파라미터를 리스트로 전송하기 위해 []를 사용하여 name 속성값을 변경 -->
+                <input type="hidden" name="stockCount[]" th:value="${data.stock}">
+                <input type="hidden" name="sellPrice[]" th:value="${data.stock_sell_price}">
+                <input type="hidden" name="stockDate[]" th:value="${data.stock_date}">
+                <input type="hidden" name="stockExpDate[]" th:value="${data.stock_expiration_date}">
+                <input type="hidden" name="stockPlace[]" th:value="${data.stock_place}">
+                <input type="hidden" name="goodsNum[]" th:value="${data.goods.goods_num}">
+                <td th:each="preorderGoods : ${preorderGoodsList}" th:if="${preorderGoods.stock.stock_num == data.stock_num}">
+                    <p th:if="${preorderGoods.preorder_goods_sale == 'N'}">
+                        <button type="button" class="btn btn-secondary" th:onclick="'startPreorder(' + ${data.stock_num} + ')'">예약판매 시작</button>
+                    </p>
+                    <p th:unless="${preorderGoods.preorder_goods_sale == 'N'}">예약판매중</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="변경하기" class="btn btn-primary">
+    </form>
+
+    <script>
+        function startPreorder(stockNum) {
+            console.log("startPreorder called with stockNum: " + stockNum);
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/preorderStart';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'stock_num';
+            input.value = stockNum;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            console.log("Form created and appended: ", form);
+            form.submit();
+        }
+    </script>
+    <br><br>
+    <h5>예약 정보 확인</h5>
+    <form th:action="@{/preorderDelete}" method="post">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th>상품명</th>
+                <th>이미지</th>
+                <th>예약자id</th>
+                <th>할인가격(할인율)</th>
+                <th>구매수량</th>
+                <th>유통기한</th>
+                <th>예약일</th>
+                <th>구매유무</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${preorderInfoList}">
+                <td th:text="${data.stock.goods.goods_name}"></td>
+                <td><img th:src="@{'/image/' + ${data.stock.goods.goods_picture}}" alt="image"></td>
+                <td th:text="${data.member.id}"></td>
+                <td th:text="${data.stock.stock_sell_price} * (1 - ${data.stock.stock_discount}/100) + '(' + ${data.stock.stock_discount} + '%)'"></td>
+                <td th:text="${data.buy_count}"></td>
+                <td th:text="${data.stock.stock_expiration_date}"></td>
+                <td th:text="${data.preorder_date}"></td>
+                <td th:text="${data.ispreorder}"></td>
+                <td><input type="checkbox" th:value="${data.preorder_info_num}" name="preorder_info_num"></td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="삭제(취소)하기" class="btn btn-primary">
+    </form>
+
+</div>
+</body>
+</html>

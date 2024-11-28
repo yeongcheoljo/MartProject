@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+            padding: 20px; /* 전체 페이지의 padding 설정 */
+        }
+        table {
+            width: 100%; /* 테이블 전체 폭을 100%로 설정 */
+            border-collapse: collapse; /* 테이블 셀 테두리 병합 */
+        }
+        th, td {
+            padding: 8px; /* 테이블 셀 안쪽 여백 설정 */
+            border-bottom: 1px solid #ddd; /* 테이블 셀 하단 테두리 설정 */
+        }
+        th {
+            background-color: #f2f2f2; /* 테이블 헤더 배경색 설정 */
+            text-align: left; /* 헤더 텍스트를 왼쪽 정렬 */
+        }
+        img {
+            max-width: 100px; /* 이미지 최대 폭 설정 */
+            max-height: 100px; /* 이미지 최대 높이 설정 */
+        }
+        input[type="submit"] {
+            background-color: #007bff; /* 변경하기 버튼 배경색 설정 */
+            color: #fff; /* 변경하기 버튼 글자색 설정 */
+            border: none; /* 변경하기 버튼 테두리 없음 */
+            padding: 10px 20px; /* 변경하기 버튼 안쪽 여백 설정 */
+            cursor: pointer; /* 커서 모양을 포인터로 설정 */
+            border-radius: 5px; /* 변경하기 버튼의 모서리를 둥글게 설정 */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* 변경하기 버튼에 호버 시 배경색 변경 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>상품관리 페이지</h1>
+    <a href="/" class="btn btn-secondary">메인페이지</a>
+    <a href="/stockorder" class="btn btn-primary">재고주문</a>
+    <a href="/stockmanagement" class="btn btn-warning">재고관리</a>
+    <a href="/disposal" class="btn btn-warning">폐기처리</a>
+    <a href="/messagesend" class="btn btn-info">메시지전송</a>
+    <a href="/preorder" class="btn btn-success">예약정보</a>
+
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>상품명</th>
+            <th>이미지</th>
+            <th>폐기량</th>
+            <th>유통기한</th>
+            <th>폐기일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${disposalList}">
+            <td th:text="${data.getGoods().getGoods_name()}"></td>
+            <td><img th:src="@{'/image/' + ${data.getGoods().getGoods_picture()}}" alt="image"></td>
+            <td th:text="${data.getDisposal_amount()} + '개'"></td>
+            <td th:text="${data.getDisposal_expiration_date()}"></td>
+            <td th:text="${data.getDisposal_date()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form action="disposal" method="post">
+        <input type="submit" value="폐기처리" class="btn btn-primary">
+    </form>
+</div>
+</body>
+</html>

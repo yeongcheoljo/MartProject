@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+        }
+        .form-group {
+            margin-bottom: 20px; /* 폼 그룹 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>상품관리 페이지</h1>
+    <a href="/" class="btn btn-secondary">메인페이지</a>
+    <a href="/stockorder" class="btn btn-primary">재고주문</a>
+    <a href="/stockmanagement" class="btn btn-warning">재고관리</a>
+    <a href="/disposal" class="btn btn-warning">폐기처리</a>
+    <a href="/messagesend" class="btn btn-info">메시지전송</a>
+    <a href="/preorder" class="btn btn-success">예약정보</a>
+
+    <form th:action="@{/messagesend}" method="post">
+        제목 : <input type="text" name="message_name" placeholder="제목을 입력하세요">
+        내용 : <input type="text" name="message_content" placeholder="전송할 메시지를 입력하세요.">
+        <br>
+        <input type="submit" value="메시지 전송">
+    </form>
+    <br>
+    전송한 메시지 정보
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>메시지 제목</th>
+            <th>발송일</th>
+            <th>메시지 내용</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${messageList}">
+            <td th:text="${data.message_name}"></td>
+            <td th:text="${data.message_send_date}"></td>
+            <td th:text="${data.message_content}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

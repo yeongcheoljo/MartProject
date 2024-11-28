@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+        }
+        .btn-group {
+            margin-right: 10px; /* 버튼 그룹 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>상품 상세정보</h1>
+    <div class="btn-group">
+        <a href="/join" class="btn btn-primary">회원가입</a>
+        <a th:if="${session.id == null}" href="/login" class="btn btn-success">로그인</a>
+        <a th:unless="${session.id == null}" href="/logout" class="btn btn-danger">로그아웃</a>
+    </div>
+    <a href="/management" class="btn btn-info">관리자페이지</a>
+    <a th:if="${session.id == 'admin'}" href="/management" class="btn btn-warning">상품관리</a>
+</div>
+<div class="container">
+    <h2 class="mt-5">상품 세부 정보</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img class="card-img-top" th:src="@{/image/{image}(image=${selectedStock.goods.goods_picture})}" alt="상품 이미지">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${selectedStock.goods.goods_name}"></h5>
+                    <p class="card-text" th:text="'가격: ' + ${selectedStock.stock_sell_price} + '원'"></p>
+                    <p class="card-text" th:text="'할인율: ' + ${selectedStock.stock_discount} + '%'" th:if="${selectedStock.stock_discount > 0}"></p>
+                    <p class="card-text" th:text="'할인된 가격: ' + (${selectedStock.stock_sell_price} * (1 - ${selectedStock.stock_discount}/100)) + '원'" th:if="${selectedStock.stock_discount > 0}"></p>
+                    <p class="card-text" th:text="'재고량: ' + ${selectedStock.stock}"></p>
+                    <p class="card-text" th:text="'유통기한: ' + ${selectedStock.stock_expiration_date}"></p>
+                    <p class="card-text" th:text="'재고위치: ' + ${selectedStock.stock_place}"></p>
+                    <br><br>
+                    <form th:if="${isPreorder == 'Y'}" th:action="@{/preorderGoods}" method="post">
+                        <input type="hidden" name="stock_num" th:value="${selectedStock.stock_num}">
+                        <div class="form-group">
+                            <label for="buyCount">예약구매 수량:</label>
+                            <select name="buyCount" class="form-control" id="buyCount">
+                                <option th:each="count : ${#numbers.sequence(1, maxSelectable)}"
+                                        th:text="${count}" th:value="${count}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">예약구매</button>
+                    </form>
+                    <form th:unless="${isPreorder == 'Y'}" th:action="@{/buyGoods}" method="post">
+                        <input type="hidden" name="stock_num" th:value="${selectedStock.stock_num}">
+                        <div class="form-group">
+                            <label for="buyCount">구매 수량:</label>
+                            <select name="buyCount" class="form-control" id="buyCountGoods">
+                                <option th:each="count : ${#numbers.sequence(1, maxSelectableGoods)}"
+                                        th:text="${count}" th:value="${count}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">상품구매</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

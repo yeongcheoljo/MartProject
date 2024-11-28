@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8" />
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 추가적인 CSS 스타일링 */
+        body {
+            background-color: #f8f9fa; /* 페이지 배경색 설정 */
+            padding: 20px; /* 전체 페이지의 padding 설정 */
+        }
+        table {
+            width: 100%; /* 테이블 전체 폭을 100%로 설정 */
+            border-collapse: collapse; /* 테이블 셀 테두리 병합 */
+        }
+        th, td {
+            padding: 8px; /* 테이블 셀 안쪽 여백 설정 */
+            border-bottom: 1px solid #ddd; /* 테이블 셀 하단 테두리 설정 */
+        }
+        th {
+            background-color: #f2f2f2; /* 테이블 헤더 배경색 설정 */
+            text-align: left; /* 헤더 텍스트를 왼쪽 정렬 */
+        }
+        img {
+            max-width: 100px; /* 이미지 최대 폭 설정 */
+            max-height: 100px; /* 이미지 최대 높이 설정 */
+        }
+        input[type="submit"] {
+            background-color: #007bff; /* 변경하기 버튼 배경색 설정 */
+            color: #fff; /* 변경하기 버튼 글자색 설정 */
+            border: none; /* 변경하기 버튼 테두리 없음 */
+            padding: 10px 20px; /* 변경하기 버튼 안쪽 여백 설정 */
+            cursor: pointer; /* 커서 모양을 포인터로 설정 */
+            border-radius: 5px; /* 변경하기 버튼의 모서리를 둥글게 설정 */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* 변경하기 버튼에 호버 시 배경색 변경 */
+        }
+    </style>
+</head>
+<body>
+    <h1>재고관리 페이지</h1>
+    <a href="/" class="btn btn-secondary">메인페이지</a>
+    <a href="/stockorder" class="btn btn-primary">재고주문</a>
+    <a href="/stockmanagement" class="btn btn-warning">재고관리</a>
+    <a href="/disposal" class="btn btn-warning">폐기처리</a>
+    <a href="/messagesend" class="btn btn-info">메시지전송</a>
+    <a href="/preorder" class="btn btn-success">예약정보</a>
+    <form th:action="@{/stockUpdate}" method="post">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th>상품명</th>
+                <th>이미지</th>
+                <th>재고</th>
+                <th>주문일</th>
+                <th>유통기한</th>
+                <th>재고위치</th>
+                <th>판매가</th>
+                <th>할인율</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data , datastat : ${stockList}">
+                <td th:text="${data.goods.getGoods_name()}">
+                    <input type="hidden" name="goods" th:value="${data.goods}"></td>
+                <td><img th:src="@{'/image/' + ${data.goods.getGoods_picture()}}" alt="image"></td>
+                <td><input type="text" name="stockCount"
+                           th:value="${data.stock}" th:placeholder="${data.stock}"></td>
+                <td th:text="${data.stock_date}"><input type="hidden" name="stockDate" th:value="${data.stock_date}"></td>
+                <td th:text="${data.stock_expiration_date}"><input type="hidden" name="stockExpDate" th:value="${data.stock_expiration_date}"></td>
+                <td th:text="${data.stock_place}"><input type="hidden" name="stockPlace" th:value="${data.stock_place}"></td>
+                <td><input type="text" name="sellPrice"
+                           th:value="${data.stock_sell_price}" th:placeholder="${data.stock_sell_price}"></td>
+                <td><input type="text" name="discount"
+                           th:value="${data.stock_discount}" th:placeholder="${data.stock_discount}">%</td>
+                <input type="hidden" name="selectedItems" th:value="${data.stock_num}">
+                <!-- 각 파라미터를 리스트로 전송하기 위해 []를 사용하여 name 속성값을 변경 -->
+                <input type="hidden" name="stockDate[]" th:value="${data.stock_date}">
+                <input type="hidden" name="stockExpDate[]" th:value="${data.stock_expiration_date}">
+                <input type="hidden" name="stockPlace[]" th:value="${data.stock_place}">
+                <input type="hidden" name="goodsNum[]" th:value="${data.goods.getGoods_num()}">
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="변경하기" class="btn btn-primary">
+        <a href="/stockdelete" class="btn btn-primary">재고 삭제</a>
+    </form>
+</body>
+</html>
